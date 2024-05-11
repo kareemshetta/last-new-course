@@ -6,7 +6,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import dotenv from "dotenv";
 
-// import cron from "node-cron";
+import cron from "node-cron";
 
 //?Custom File
 import { allRoutes } from "./src/Modules/index.routes.js";
@@ -101,7 +101,7 @@ const updateExamStatus = async () => {
 };
 
 // Schedule the cron job to run every minute
-// cron.schedule("* * * * *", updateExamStatus);
+cron.schedule("* * * * *", updateExamStatus);
 
 // Schedule the cron job to run every minute
 // cron.schedule("* * * * *", makeExamActive);
