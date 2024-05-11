@@ -92,9 +92,9 @@ export const getUnitByClassId = catchError(async (request, response, next) => {
 
 export const getAllNotificationsForStudent = catchError(
   async (request, response, next) => {
-    let { studentId } = request.params;
+    let { recipientId } = request.params;
     let notifications = await NotificationSchema.findAll({
-      where: { studentId, isRead: false },
+      where: { studentId: recipientId, isRead: false },
     });
     response.status(200).json({
       message: "Get All Notifications Successfully 😃",
@@ -105,9 +105,9 @@ export const getAllNotificationsForStudent = catchError(
 
 export const getAllNotificationsForTeacher = catchError(
   async (request, response, next) => {
-    let { teacherId } = request.params;
+    let { recipientId } = request.params;
     let notifications = await NotificationSchema.findAll({
-      where: { teacherId, isRead: false },
+      where: { teacherId: recipientId, isRead: false },
     });
     response.status(200).json({
       message: "Get All Notifications Successfully 😃",
