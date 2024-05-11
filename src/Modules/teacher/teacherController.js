@@ -107,7 +107,7 @@ export const verifiedStudent = catchError(async (request, response, next) => {
       verified ? "Verified" : "Not Verified"
     }.`,
     recipientType: "Student",
-    recipientId: studentId,
+    studentId: studentId,
     notificationType: "verification",
   });
   response.status(200).json({
@@ -177,7 +177,7 @@ export const updateStudentResult = catchError(
         result.examId ? "exam" : "homework"
       } has been marked. Your score is ${score}.`,
       recipientType: "Student",
-      recipientId: result.studentId,
+      studentId: result.studentId,
       notificationType: "submit_answer",
     });
 

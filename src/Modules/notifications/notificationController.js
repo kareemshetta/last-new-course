@@ -90,11 +90,24 @@ export const getUnitByClassId = catchError(async (request, response, next) => {
   });
 });
 
-export const getAllNotifications = catchError(
+export const getAllNotificationsForStudent = catchError(
   async (request, response, next) => {
-    let { recipientId } = request.params;
+    let { studentId } = request.params;
     let notifications = await NotificationSchema.findAll({
-      where: { recipientId, isRead: false },
+      where: { studentId, isRead: false },
+    });
+    response.status(200).json({
+      message: "Get All Notifications Successfully 😃",
+      notifications,
+    });
+  }
+);
+
+export const getAllNotificationsForTeacher = catchError(
+  async (request, response, next) => {
+    let { teacherId } = request.params;
+    let notifications = await NotificationSchema.findAll({
+      where: { teacherId, isRead: false },
     });
     response.status(200).json({
       message: "Get All Notifications Successfully 😃",

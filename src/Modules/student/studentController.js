@@ -148,7 +148,7 @@ export const finishExam = catchError(async (request, response, next) => {
         title: "Exam Submission",
         message: `${student.userName} has submitted a PDF exam for verification.`,
         recipientType: "Teacher",
-        recipientId: student.teacherId,
+        teacherId: student.teacherId,
       });
     } else {
       await ResultSchema.create({
@@ -196,7 +196,7 @@ export const finishExam = catchError(async (request, response, next) => {
         title: "Homework Submission",
         message: `${student.userName} has submitted a PDF homework for verification.`,
         recipientType: "Teacher",
-        recipientId: student.teacherId,
+        teacherId: student.teacherId,
       });
     } else {
       await ResultSchema.create({

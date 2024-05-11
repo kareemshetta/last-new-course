@@ -163,35 +163,19 @@ BookSchema.belongsTo(ClassSchema, {
   foreignKey: "classId",
 });
 StudentSchema.hasMany(NotificationSchema, {
-  foreignKey: "recipientId",
-  constraints: false,
-  scope: {
-    recipientType: "Student",
-  },
+  foreignKey: { name: "studentId", allowNull: true },
 });
 
 TeacherSchema.hasMany(NotificationSchema, {
-  foreignKey: "recipientId",
-  constraints: false,
-  scope: {
-    recipientType: "Teacher",
-  },
+  foreignKey: { name: "teacherId", allowNull: true },
 });
 NotificationSchema.belongsTo(StudentSchema, {
-  foreignKey: "recipientId",
-  constraints: false,
-  scope: {
-    recipientType: "Student",
-  },
+  foreignKey: { name: "studentId", allowNull: true },
+  // constraints: false,
 });
 
 NotificationSchema.belongsTo(TeacherSchema, {
-  foreignKey: "recipientId",
-
-  constraints: false,
-  scope: {
-    recipientType: "Teacher",
-  },
+  foreignKey: { name: "teacherId", allowNull: true },
 });
 
 //! -------------end relations-----------------------------------//
