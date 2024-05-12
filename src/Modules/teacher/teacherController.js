@@ -241,6 +241,7 @@ export const getAllResultFroPendingHomeWork = catchError(
           {
             model: StudentSchema,
             attributes: { exclude: ["password"] },
+            include: [{ model: ClassSchema }, { model: GroupSchema }],
           },
         ],
       });
