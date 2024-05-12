@@ -26,7 +26,7 @@ dotenv.config();
 //   },
 // });
 
-export const sequelize = new Sequelize(process.env.REMOTE_POSTGRES);
+// export const sequelize = new Sequelize(process.env.REMOTE_POSTGRES);
 //? all models
 export const StudentSchema = createStudent(sequelize);
 export const TeacherSchema = createTeacher(sequelize);

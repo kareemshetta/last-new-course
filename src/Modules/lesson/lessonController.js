@@ -167,3 +167,18 @@ export const deleteLesson = catchError(async (request, response, next) => {
     message: "Lesson Deleted Successfully",
   });
 });
+
+export const getLessonsByUnitId = catchError(
+  async (request, response, next) => {
+    const { unitId } = request.params;
+    const lessons = await LessonSchema.findAll({
+      where: {
+        unitId,
+      },
+      include: { model: UnitSchema, as: "unit" },
+    });
+    response.status(200).json({
+      lessons,
+    });
+  }
+);

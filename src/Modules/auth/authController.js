@@ -21,7 +21,7 @@ export const register = catchError(async (request, response, next) => {
     title: "New Student Registration",
     message: `Student ${newStudent.userName} has registered and needs verification.`,
     recipientType: "Teacher",
-    teacherId: request.body.teacherId,
+    teacherId: newStudent.teacherId,
   });
 
   response.status(201).json({

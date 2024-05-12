@@ -4,18 +4,33 @@ export const createNotification = async ({
   title,
   message,
   recipientType,
-  recipientId,
+  teacherId,
+  studentId,
   notificationType,
 }) => {
   try {
-    const notification = await NotificationSchema.create({
-      title,
-      message,
-      recipientType,
-      recipientId,
-      notificationType,
-    });
-    return notification;
+    if (studentId) {
+      const notification = await NotificationSchema.create({
+        title,
+        message,
+        recipientType,
+        studentId,
+        notificationType,
+      });
+
+      return notification;
+    } else {
+      const notification = await NotificationSchema.create({
+        title,
+        message,
+        recipientType,
+        teacherId,
+        notificationType,
+      });
+      return notification;
+    }
+
+    // return notification;
   } catch (error) {
     console.error("Error creating notification:", error);
     throw error;

@@ -5,6 +5,7 @@ import {
   createLesson,
   deleteLesson,
   getLessons,
+  getLessonsByUnitId,
   updateLesson,
 } from "./lessonController.js";
 import { fileUpload } from "../../utils/FileUpload.js";
@@ -33,4 +34,6 @@ router
     updateLesson
   )
   .delete(validation(validators.getById), deleteLesson);
+
+router.get("/:unitId", getLessonsByUnitId);
 export default router;
