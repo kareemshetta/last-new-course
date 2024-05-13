@@ -143,7 +143,9 @@ groups."name"
     // });
 
     if (groupExams && groupExams.length) {
-      response.status(200).json(groupExams);
+      response.status(200).json({
+        Exams: groupExams,
+      });
     } else {
       return next(ErrorMessage(404, `No Exams Found For This Group 😥`));
     }
