@@ -5,6 +5,7 @@ import {
   LessonSchema,
   ResultSchema,
   StudentSchema,
+  TeacherSchema,
 } from "../../../DB/dbConnection.js";
 import { ErrorMessage } from "../../utils/ErrorMessage.js";
 import { createNotification } from "../../utils/NotificationService.js";
@@ -28,6 +29,10 @@ export const getStudentById = catchError(async (request, response, next) => {
       {
         model: ResultSchema,
         attributes: ["score"],
+      },
+      {
+        model: TeacherSchema,
+        attributes: ["facebookUrl", "whatsappUrl"], // Only include facebookUrl and whatsappUrl attributes
       },
     ],
     attributes: { exclude: ["password"] },
