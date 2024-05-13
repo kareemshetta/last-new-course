@@ -116,14 +116,10 @@ export const finishExam = catchError(async (request, response, next) => {
 
     const existingExam = await ExamSchema.findByPk(examId);
 
-    console.log({
-      score,
-      examScore: existingExam.score,
-    });
     if (!existingExam) {
       return next(ErrorMessage(404, `Exam Not Found 😥`));
     }
-    if (+score > +existingExam.score) {
+    if (+score > +existingExam?.score) {
       return next(ErrorMessage(404, `invalid Score 😥`));
     }
 
