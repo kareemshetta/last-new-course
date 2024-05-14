@@ -18,8 +18,8 @@ export const register = catchError(async (request, response, next) => {
   // Create notification for the teacher
   await createNotification({
     notificationType: "register",
-    title: "New Student Registration",
-    message: `Student ${newStudent.userName} has registered and needs verification.`,
+    title: "طالب جديد قام بالتسجيل",
+    message: `${newStudent.userName}عملية تسجيل حساب جديدة باسم`,
     recipientType: "Teacher",
     teacherId: newStudent.teacherId,
   });

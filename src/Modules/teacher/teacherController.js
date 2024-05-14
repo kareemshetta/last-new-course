@@ -102,10 +102,8 @@ export const verifiedStudent = catchError(async (request, response, next) => {
   });
   // Create notification for the student
   await createNotification({
-    title: "Verification Status Updated",
-    message: `Your verification status has been updated to ${
-      verified ? "Verified" : "Not Verified"
-    }.`,
+    title: `${verified ? "تم تفعيل الحساب" : "تم الغاء تفعيل الحساب"}`,
+    message: `${verified ? "تم تفعيل حسابك بنجاح" : "تم الغاء تفعيل حسابك"}`,
     recipientType: "Student",
     studentId: studentId,
     notificationType: "verification",
@@ -172,10 +170,12 @@ export const updateStudentResult = catchError(
 
     // Create notification for the student
     await createNotification({
-      title: `${result.examId ? "Exam" : "Homework"} Marked`,
-      message: `Your ${
-        result.examId ? "exam" : "homework"
-      } has been marked. Your score is ${score}.`,
+      title: `${result.examId ? "تم تصحيح الامتحان" : "تم تصحيح الواجب"}`,
+      message: `${
+        result.examId
+          ? "تم تصحيح الامتحان وحصلت علي النتيجة ${score}"
+          : "تم تصحيح الواجب وحصلت علي النتيجة ${score}"
+      }`,
       recipientType: "Student",
       studentId: result.studentId,
       notificationType: "submit_answer",

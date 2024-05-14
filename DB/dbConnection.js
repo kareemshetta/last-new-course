@@ -13,20 +13,20 @@ import { createGroupExam } from "../models/Group_Exam.js";
 import { createNotification } from "../models/Notification.js";
 dotenv.config();
 
-// export const sequelize = new Sequelize({
-//   username: process.env.DB_USERNAME,
-//   password: process.env.DB_PASSWORD,
-//   database: process.env.DB_NAME,
-//   dialect: "postgres",
-//   port: process.env.DB_PORT,
-//   host: process.env.DB_HOST,
-//   define: {
-//     charset: "utf8",
-//     collate: "utf8_general_ci",
-//   },
-// });
+export const sequelize = new Sequelize({
+  username: process.env.DB_USERNAME,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+  dialect: "postgres",
+  port: process.env.DB_PORT,
+  host: process.env.DB_HOST,
+  define: {
+    charset: "utf8",
+    collate: "utf8_general_ci",
+  },
+});
 
-export const sequelize = new Sequelize(process.env.REMOTE_POSTGRES);
+// export const sequelize = new Sequelize(process.env.REMOTE_POSTGRES);
 //? all models
 export const StudentSchema = createStudent(sequelize);
 export const TeacherSchema = createTeacher(sequelize);

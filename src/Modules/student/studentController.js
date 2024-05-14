@@ -146,8 +146,8 @@ export const finishExam = catchError(async (request, response, next) => {
       // Create notification for the teacher
       await createNotification({
         notificationType: "exam_submission",
-        title: "Exam Submission",
-        message: `${student.userName} has submitted a PDF exam for verification.`,
+        title: "استلام امتحان",
+        message: `${student.userName} تم استلام امتحان من الطالب `,
         recipientType: "Teacher",
         teacherId: student.teacherId,
       });
@@ -194,8 +194,8 @@ export const finishExam = catchError(async (request, response, next) => {
       // Create notification for the teacher
       await createNotification({
         notificationType: "homework_submission",
-        title: "Homework Submission",
-        message: `${student.userName} has submitted a PDF homework for verification.`,
+        title: "استلام واجب",
+        message: `${student.userName} تم استلام واجب من الطالب `,
         recipientType: "Teacher",
         teacherId: student.teacherId,
       });
