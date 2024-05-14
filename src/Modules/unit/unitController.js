@@ -10,14 +10,11 @@ export const createUnit = catchError(async (request, response, next) => {
   const { name, classId } = request.body;
   const existingUnit = await UnitSchema.findOne({ where: { name, classId } });
   if (existingUnit) {
-    return next(ErrorMessage(409, "Unit Already Exist 🙄"));
+    return next(ErrorMessage(409, "هذه الوحدة موجودة بالفعل"));
   }
-  const newUnit = await UnitSchema.create({
-    name,
-    classId,
-  });
+  const newUnit = await UnitSchema.create(request.body);
   response.status(201).json({
-    message: "Add New Unit Successfully 😃",
+    message: "تم اضافة وحدة جديدة بنجاح",
     result: newUnit,
   });
 });
@@ -37,16 +34,16 @@ export const deleteUnit = catchError(async (request, response, next) => {
 
     if (result === 0) {
       await transaction.rollback();
-      return next(ErrorMessage(404, `Unit Not Found 😥`));
+      return next(ErrorMessage(404, `الوحدة غير موجودة`));
     }
 
     await transaction.commit();
     response.status(200).json({
-      message: "Delete Successfully 🤝",
+      message: "تم الحذف بنجاح",
     });
   } catch (error) {
     await transaction.rollback();
-    next(ErrorMessage(500, `Failed to delete unit: ${error.message}`));
+    next(ErrorMessage(500, `حدث خطأ ما`));
   }
 });
 
@@ -56,15 +53,15 @@ export const updateUnit = catchError(async (request, response, next) => {
 
   const existingUnit = await UnitSchema.findOne({ where: { name, classId } });
   if (existingUnit) {
-    return next(ErrorMessage(409, "Unit Already Exist 🙄"));
+    return next(ErrorMessage(409, "هناك وحدة بنفس الاسم موجودة بالفعل"));
   }
 
   let result = await UnitSchema.update({ name }, { where: { id } });
   if (!result) {
-    return next(ErrorMessage(404, `Unit Not Found 😥`));
+    return next(ErrorMessage(404, `هذه الوحدة غير موجودة`));
   }
   response.status(200).json({
-    message: "Update Successfully 🤝",
+    message: "تم تحديث الوحدة بنجاح",
   });
 });
 
@@ -72,7 +69,7 @@ export const getUnitById = catchError(async (request, response, next) => {
   let { id } = request.params;
   let unit = await UnitSchema.findOne({ where: { id } });
   if (!unit) {
-    return next(ErrorMessage(404, `Unit Not Found 😥`));
+    return next(ErrorMessage(404, `هذه الوحدة غير موجودة`));
   }
   response.status(200).json({
     message: "Get Unit Successfully 😃",

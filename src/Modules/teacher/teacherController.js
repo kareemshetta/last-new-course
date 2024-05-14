@@ -31,7 +31,7 @@ export const login = catchError(async (request, response, next) => {
       token,
     });
   }
-  next(ErrorMessage(401, "Incorrect Email Or Password 🙄"));
+  next(ErrorMessage(401, "يوجد خطأ في البريد الالكتروني او كلمة المرور"));
 });
 
 export const register = catchError(async (request, response, next) => {
@@ -39,12 +39,12 @@ export const register = catchError(async (request, response, next) => {
     where: { email: request.body.email },
   });
   if (existingTeacher) {
-    return next(ErrorMessage(409, "Account Already Exist 🙄"));
+    return next(ErrorMessage(409, "المعلم موجود بالفعل"));
   }
   console.log(request.body);
   const newTeacher = await TeacherSchema.create(request.body);
   response.status(201).json({
-    message: "Add New Teacher Successfully 😃",
+    message: "تم تسجيل المعلم بنجاح",
     result: newTeacher,
   });
 });
@@ -54,16 +54,16 @@ export const changePassword = catchError(async (request, response, next) => {
   let { newPassword, oldPassword } = request.body;
   const existingTeacher = await TeacherSchema.findByPk(id);
   if (!existingTeacher) {
-    return next(ErrorMessage(404, "Teacher Not Found"));
+    return next(ErrorMessage(404, "المعلم غير موجود"));
   }
   const match = await bcrypt.compare(oldPassword, existingTeacher.password);
   if (!match) {
-    return next(ErrorMessage(401, "Incorrect Old Password"));
+    return next(ErrorMessage(401, "كلمة المرور القديمة غير صحيحة"));
   }
   existingTeacher.password = newPassword;
   await existingTeacher.save();
   response.status(200).json({
-    message: "Password Changed Successfully",
+    message: "تم تغيير كلمة المرور بنجاح",
   });
 });
 
@@ -72,7 +72,7 @@ export const updateTeacherData = catchError(async (request, response, next) => {
 
   const existingTeacher = await TeacherSchema.findByPk(id);
   if (!existingTeacher) {
-    return next(ErrorMessage(404, "Teacher Not Found"));
+    return next(ErrorMessage(404, "المعلم غير موجود"));
   }
   const body = { ...request.body };
   if (request.file) {
@@ -82,7 +82,7 @@ export const updateTeacherData = catchError(async (request, response, next) => {
   await TeacherSchema.update(body, { where: { id } });
 
   response.status(200).json({
-    message: "profile updated successfully",
+    message: "تم تحديث بيانات المعلم بنجاح",
   });
 });
 
@@ -109,7 +109,7 @@ export const verifiedStudent = catchError(async (request, response, next) => {
     notificationType: "verification",
   });
   response.status(200).json({
-    message: "Student Verified Status Changed Successfully",
+    message: `${verified ? "تم تفعيل حسابك بنجاح" : "تم الغاء تفعيل حسابك"}`,
     newStudent,
   });
 });
@@ -123,20 +123,20 @@ export const changeStudentGroup = catchError(
       attributes: { exclude: ["password"] },
     });
     if (!studentExist) {
-      return next(ErrorMessage(404, "Student Not Found"));
+      return next(ErrorMessage(404, "الطالب غير موجود"));
     }
     const groupExists = await GroupSchema.findOne({
       where: { id: groupId },
     });
     if (!groupExists) {
-      return next(ErrorMessage(404, "Group Not Found"));
+      return next(ErrorMessage(404, "المجموعة غير موجودة"));
     }
 
     if (studentExist.classId !== groupExists.classId) {
       return next(
         ErrorMessage(
           403,
-          "You can't assign student to group doesn't exist in student class"
+          "لا يمكن تغير المجموعة لانها ليست مجموعة في نفس الصف "
         )
       );
     }
@@ -146,8 +146,17 @@ export const changeStudentGroup = catchError(
       fields: ["groupId"],
     });
 
+    // Create notification for the student
+    await createNotification({
+      title: "تغيير المجموعة",
+      message: `تم تغير المجموعة بنجاح الى ${groupExists?.name}`,
+      recipientType: "Student",
+      studentId: studentId,
+      notificationType: "changeGroup",
+    });
+
     response.status(200).json({
-      message: "Student Group Changed Successfully",
+      message: "تم تغيير المجموعة بنجاح",
       student: result,
     });
   }
@@ -173,8 +182,8 @@ export const updateStudentResult = catchError(
       title: `${result.examId ? "تم تصحيح الامتحان" : "تم تصحيح الواجب"}`,
       message: `${
         result.examId
-          ? "تم تصحيح الامتحان وحصلت علي النتيجة ${score}"
-          : "تم تصحيح الواجب وحصلت علي النتيجة ${score}"
+          ? `تم تصحيح الامتحان وحصلت علي النتيجة ${score}`
+          : `تم تصحيح الواجب وحصلت علي النتيجة ${score}`
       }`,
       recipientType: "Student",
       studentId: result.studentId,
@@ -192,79 +201,43 @@ export const getTeacherDetails = catchError(async (request, response, next) => {
   let { id } = request.modal;
 
   const existingTeacher = await TeacherSchema.findByPk(id, {
-    attributes: { exclude: ["password"] }, // Correct use of the attributes option to exclude the password
+    attributes: { exclude: ["password"] },
   });
   if (!existingTeacher) {
-    return next(ErrorMessage(404, "not found"));
+    return next(ErrorMessage(404, "المعلم غير موجود"));
   }
   return response.json({
     teacher: existingTeacher,
   });
 });
 
-// export const getAllResultFroPendingHomeWork = catchError(
-//   async (request, response, next) => {
-//     const results = await ResultSchema.findAll({
-//       where: {
-//         status: "Pending",
-//       },
-//       include: [
-//         {
-//           model: StudentSchema,
-//           attributes: { exclude: ["password"] },
-//         },
-//         {
-//           model: LessonSchema,
-//           required: false,
-//         },
-//         {
-//           model: ExamSchema,
-//           required: false,
-//         },
-//       ],
-//     });
-//     if (!results) {
-//       return next(ErrorMessage(404, "not found"));
-//     }
-//     return response.json({
-//       results,
-//     });
-//   }
-// );
-
 export const getAllResultFroPendingHomeWork = catchError(
   async (request, response, next) => {
-    try {
-      const results = await ResultSchema.findAll({
-        where: { status: "Pending" },
-        include: [
-          {
-            model: StudentSchema,
-            attributes: { exclude: ["password"] },
-            include: [{ model: ClassSchema }, { model: GroupSchema }],
-          },
-        ],
-      });
+    const results = await ResultSchema.findAll({
+      where: { status: "Pending" },
+      include: [
+        {
+          model: StudentSchema,
+          attributes: { exclude: ["password"] },
+          include: [{ model: ClassSchema }, { model: GroupSchema }],
+        },
+      ],
+    });
 
-      for (let result of results) {
-        if (result.examId) {
-          const exam = await ExamSchema.findByPk(result.examId);
-          result.dataValues.Exam = exam;
-        } else if (result.lessonId) {
-          const lesson = await LessonSchema.findByPk(result.lessonId);
-          result.dataValues.Lesson = lesson;
-        }
+    for (let result of results) {
+      if (result.examId) {
+        const exam = await ExamSchema.findByPk(result.examId);
+        result.dataValues.Exam = exam;
+      } else if (result.lessonId) {
+        const lesson = await LessonSchema.findByPk(result.lessonId);
+        result.dataValues.Lesson = lesson;
       }
-
-      if (results.length === 0) {
-        return next(ErrorMessage(404, "not found "));
-      }
-
-      return response.json({ results });
-    } catch (error) {
-      console.error("Failed to fetch results:", error);
-      return next(ErrorMessage(500, "Internal Server Error"));
     }
+
+    if (results.length === 0) {
+      return next(ErrorMessage(404, "not found "));
+    }
+    response.status(200).json({ results });
   }
 );
 
@@ -291,9 +264,9 @@ export const getExamResults = catchError(async (request, response, next) => {
     ],
   });
   if (!results) {
-    return next(ErrorMessage(404, "not found"));
+    return next(ErrorMessage(404, "لا يوجد نتائج"));
   }
-  return response.json({ results });
+  return response.status(200).json({ results });
 });
 
 export const getStudentById = catchError(async (request, response, next) => {
@@ -320,7 +293,7 @@ export const getStudentById = catchError(async (request, response, next) => {
   });
 
   if (!student) {
-    return next(ErrorMessage(404, `Student Not Found 😥`));
+    return next(ErrorMessage(404, `الطالب غير موجود`));
   }
   const studentData = student.toJSON();
   studentData.totalPoints =
