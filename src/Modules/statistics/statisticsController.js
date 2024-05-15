@@ -1,12 +1,11 @@
+import { Sequelize } from "sequelize";
 import {
   ClassSchema,
-  ExamSchema,
   GroupSchema,
   StudentSchema,
   UnitSchema,
 } from "../../../DB/dbConnection.js";
 import { catchError } from "../../utils/catchAsyncError.js";
-import { Sequelize } from "sequelize";
 
 export const getStatistics = catchError(async (request, response, next) => {
   const classes = await ClassSchema.findAll({

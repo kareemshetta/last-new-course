@@ -39,7 +39,7 @@ export const getStudentById = catchError(async (request, response, next) => {
   });
 
   if (!student) {
-    return next(ErrorMessage(404, `Student Not Found 😥`));
+    return next(ErrorMessage(404, `الطالب غير موجود`));
   }
   const studentData = student.toJSON();
   studentData.totalPoints =
@@ -60,16 +60,16 @@ export const changePassword = catchError(async (request, response, next) => {
   let { newPassword, oldPassword } = request.body;
   const existingStudent = await StudentSchema.findByPk(id);
   if (!existingStudent) {
-    return next(ErrorMessage(404, "Student Not Found"));
+    return next(ErrorMessage(404, "الطالب غير موجود"));
   }
   const match = await bcrypt.compare(oldPassword, existingStudent.password);
   if (!match) {
-    return next(ErrorMessage(401, "Incorrect Old Password"));
+    return next(ErrorMessage(401, "كلمة المرور القديمة غير صحيحة"));
   }
   existingStudent.password = newPassword;
   await existingStudent.save();
   response.status(200).json({
-    message: "Password Changed Successfully",
+    message: "تم تغيير كلمة المرور بنجاح",
   });
 });
 
@@ -102,34 +102,32 @@ export const finishExam = catchError(async (request, response, next) => {
   const student = await StudentSchema.findByPk(id);
 
   if (!student) {
-    return next(ErrorMessage(404, `Student Not Found 😥`));
+    return next(ErrorMessage(404, `الطالب غير موجود`));
   }
   if (examId) {
     const existingResult = await ResultSchema.findOne({
       where: { studentId: id, examId },
     });
     if (existingResult) {
-      return next(
-        ErrorMessage(403, `sorry you have already finished this exam 😥`)
-      );
+      return next(ErrorMessage(403, `لقد قمت بالامتحان من قبل `));
     }
 
     const existingExam = await ExamSchema.findByPk(examId);
 
     if (!existingExam) {
-      return next(ErrorMessage(404, `Exam Not Found 😥`));
+      return next(ErrorMessage(404, `الامتحان غير موجود`));
     }
     if (+score > +existingExam?.score) {
-      return next(ErrorMessage(404, `invalid Score 😥`));
+      return next(ErrorMessage(404, `نتيجة غير صحيحة`));
     }
 
     if (existingExam.status == "finished") {
       score = 0;
-      message = "Exam Expired and your score is 0";
+      message = "لقد انتهت مدة الامتحان ، لا يمكنك تسجيل نتيجتك";
     }
 
     if (existingExam.status === "inactive") {
-      return next(ErrorMessage(404, `Exam not start yet`));
+      return next(ErrorMessage(404, `الامتحان لم يبدء بعد`));
     }
 
     if (existingExam.questionType == "PDF" && request.file) {
@@ -141,7 +139,7 @@ export const finishExam = catchError(async (request, response, next) => {
         status: "Pending",
         answerFile: dest,
       });
-      message = "You have successfully submitted your exam";
+      message = "تم تسجيل نتيجتك بنجاح";
 
       // Create notification for the teacher
       await createNotification({
@@ -166,20 +164,15 @@ export const finishExam = catchError(async (request, response, next) => {
       where: { studentId: id, lessonId },
     });
     if (existingResult) {
-      return next(
-        ErrorMessage(
-          403,
-          `sorry you have already submitted your homework answer😥`
-        )
-      );
+      return next(ErrorMessage(403, `لقد ارسالة نتيجتك من قبل`));
     }
     const existingLesson = await LessonSchema.findByPk(lessonId);
     if (!existingLesson) {
-      return next(ErrorMessage(404, `lesson Not Found 😥`));
+      return next(ErrorMessage(404, `الدرس غير موجود`));
     }
 
     if (+score > +existingLesson.score) {
-      return next(ErrorMessage(404, `invalid Score 😥`));
+      return next(ErrorMessage(404, `نتيجة غير صحيحة`));
     }
     if (existingLesson.questionType == "PDF" && request.file) {
       const { dest } = request.file;
@@ -207,7 +200,7 @@ export const finishExam = catchError(async (request, response, next) => {
         status: "Completed",
       });
     }
-    message = "You have successfully submitted your homework";
+    message = "تم تسجيل نتيجتك بنجاح";
   }
 
   response.status(200).json({
@@ -248,21 +241,6 @@ export const getAllStudent = catchError(async (request, response, next) => {
     return studentData;
   });
 
-  // const students = await sequelize.query(
-  //   `SELECT "userName", "phone", "address","email","phone",
-  //  "profileImage",students."id" as "studentId",
-  //    classes."name" as "className", groups."name" as "groupName",
-  //       COALESCE(SUM(results."score"), 0) as "totalPoints"  FROM public.students
-  //   LEFT JOIN results ON students."id"=results."studentId"
-  //   JOIN classes ON classes."id"=students."classId"
-  //   JOIN groups ON groups."id"=students."groupId"
-  //   group by students."id", classes."name",
-  //   groups."name" `,
-  //   {
-  //     type: QueryTypes.SELECT,
-  //   }
-  // );
-
   response.status(200).json({
     allStudents: formattedStudents,
   });
@@ -276,7 +254,7 @@ export const deleteStudent = catchError(async (request, response, next) => {
     attributes: { exclude: ["password"] },
   });
   if (!studentExist) {
-    return next(ErrorMessage(404, "Student Not Found"));
+    return next(ErrorMessage(404, "الطالب غير موجود"));
   }
 
   await StudentSchema.destroy({
@@ -284,6 +262,6 @@ export const deleteStudent = catchError(async (request, response, next) => {
   });
 
   response.status(200).json({
-    message: "Student Deleted Successfully",
+    message: "تم حذف الطالب بنجاح",
   });
 });
