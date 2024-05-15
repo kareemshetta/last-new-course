@@ -58,5 +58,5 @@ export const getStatistics = catchError(async (request, response, next) => {
     group: [Sequelize.col("class.id")], // Correctly referencing the primary key with table alias
   });
 
-  response.status(200).json({ classes });
+  response.status(200).json({ classes, statusCode: 200 });
 });

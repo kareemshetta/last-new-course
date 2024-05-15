@@ -16,6 +16,7 @@ export const createUnit = catchError(async (request, response, next) => {
   response.status(201).json({
     message: "تم اضافة وحدة جديدة بنجاح",
     result: newUnit,
+    statusCode: 201,
   });
 });
 
@@ -40,6 +41,7 @@ export const deleteUnit = catchError(async (request, response, next) => {
     await transaction.commit();
     response.status(200).json({
       message: "تم الحذف بنجاح",
+      statusCode: 200,
     });
   } catch (error) {
     await transaction.rollback();
@@ -62,6 +64,7 @@ export const updateUnit = catchError(async (request, response, next) => {
   }
   response.status(200).json({
     message: "تم تحديث الوحدة بنجاح",
+    statusCode: 200,
   });
 });
 
@@ -74,6 +77,7 @@ export const getUnitById = catchError(async (request, response, next) => {
   response.status(200).json({
     message: "Get Unit Successfully 😃",
     unit,
+    statusCode: 200,
   });
 });
 
@@ -86,6 +90,7 @@ export const getUnitByClassId = catchError(async (request, response, next) => {
   response.status(200).json({
     message: "Get Unit Successfully 😃",
     units,
+    statusCode: 200,
   });
 });
 
@@ -94,5 +99,6 @@ export const getAllUnits = catchError(async (request, response, next) => {
   response.status(200).json({
     message: "Get All Units Successfully 😃",
     units,
+    statusCode: 200,
   });
 });

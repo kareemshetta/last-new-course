@@ -52,6 +52,7 @@ export const getStudentById = catchError(async (request, response, next) => {
 
   response.status(200).json({
     studentData,
+    statusCode: 200,
   });
 });
 
@@ -70,6 +71,7 @@ export const changePassword = catchError(async (request, response, next) => {
   await existingStudent.save();
   response.status(200).json({
     message: "تم تغيير كلمة المرور بنجاح",
+    statusCode: 200,
   });
 });
 
@@ -90,6 +92,7 @@ export const updateProfileImage = catchError(
     response.status(200).json({
       message: "Profile Image Changed Successfully",
       result,
+      statusCode: 200,
     });
   }
 );
@@ -205,6 +208,7 @@ export const finishExam = catchError(async (request, response, next) => {
 
   response.status(200).json({
     message,
+    statusCode: 200,
   });
 });
 
@@ -243,6 +247,7 @@ export const getAllStudent = catchError(async (request, response, next) => {
 
   response.status(200).json({
     allStudents: formattedStudents,
+    statusCode: 200,
   });
 });
 
@@ -263,5 +268,6 @@ export const deleteStudent = catchError(async (request, response, next) => {
 
   response.status(200).json({
     message: "تم حذف الطالب بنجاح",
+    statusCode: 200,
   });
 });

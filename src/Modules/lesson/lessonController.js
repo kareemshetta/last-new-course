@@ -43,6 +43,7 @@ export const createLesson = catchError(async (request, response, next) => {
   response.status(201).json({
     message: "تم اضافة الدرس بنجاح",
     result: newLesson,
+    statusCode: 201,
   });
 });
 export const updateLesson = catchError(async (request, response, next) => {
@@ -96,6 +97,7 @@ export const updateLesson = catchError(async (request, response, next) => {
   response.status(201).json({
     message: "تم تعديل الدرس بنجاح",
     result: updatedLesson,
+    statusCode: 201,
   });
 });
 
@@ -119,6 +121,7 @@ export const getLessons = catchError(async (request, response, next) => {
 
   response.status(200).json({
     Lessons,
+    statusCode: 200,
   });
 });
 
@@ -147,6 +150,7 @@ export const deleteLesson = catchError(async (request, response, next) => {
   await LessonSchema.destroy({ where: { id } });
   response.status(200).json({
     message: "تم حذف الدرس بنجاح",
+    statusCode: 200,
   });
 });
 
@@ -161,6 +165,7 @@ export const getLessonsByUnitId = catchError(
     });
     response.status(200).json({
       lessons,
+      statusCode: 200,
     });
   }
 );

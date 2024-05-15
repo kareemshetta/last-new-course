@@ -13,12 +13,12 @@ export const createBook = catchError(async (request, response, next) => {
   // check if unit exist
   const existingClass = await ClassSchema.findByPk(classId);
   if (!existingClass) {
-    return next(ErrorMessage(404, "Class Not Found 😥"));
+    return next(ErrorMessage(404, "الصف غير موجود"));
   }
   // check if book exist
   const existingBook = await BookSchema.findOne({ where: { title } });
   if (existingBook) {
-    return next(ErrorMessage(409, "Book Already Exist 🙄"));
+    return next(ErrorMessage(409, "الكتاب موجود من قبل"));
   }
 
   // for pdf file
@@ -30,8 +30,9 @@ export const createBook = catchError(async (request, response, next) => {
 
   const newBook = await BookSchema.create(request.body);
   response.status(201).json({
-    message: "Add New Book Successfully 😃",
+    message: "تم اضافة الكتاب بنجاح",
     book: newBook,
+    statusCode: 201,
   });
 });
 
@@ -42,7 +43,7 @@ export const updateBook = catchError(async (request, response, next) => {
   const unLinkAsync = promisify(fs.unlink);
   const existingBook = await BookSchema.findByPK(id);
   if (!existingBook) {
-    return next(ErrorMessage(404, "Book Not Found 😥"));
+    return next(ErrorMessage(404, "الكتاب غير موجود"));
   }
   if (title) {
     const existingBookWithSomeTitle = await BookSchema.findOne({
@@ -50,13 +51,13 @@ export const updateBook = catchError(async (request, response, next) => {
     });
 
     if (existingBookWithSomeTitle) {
-      return next(ErrorMessage(409, "Book  With This Title Already Exist 🙄"));
+      return next(ErrorMessage(409, "الكتاب بهذا العنوان موجود من قبل"));
     }
   }
 
   const existingClass = await ClassSchema.findByPk(classId);
   if (!existingClass) {
-    return next(ErrorMessage(404, "Class Not Found 😥"));
+    return next(ErrorMessage(404, "الصف غير موجود"));
   }
 
   if (request.files.pdf) {
@@ -76,7 +77,8 @@ export const updateBook = catchError(async (request, response, next) => {
 
   await BookSchema.update(request.body, { where: { id } }, { returning: true });
   response.status(201).json({
-    message: "Book Updated Successfully 😃",
+    message: "تم تعديل الكتاب بنجاح",
+    statusCode: 201,
   });
 });
 
@@ -85,7 +87,7 @@ export const deleteBook = catchError(async (request, response, next) => {
   const unLinkAsync = promisify(fs.unlink);
   const existingBook = await BookSchema.findByPk(id);
   if (!existingBook) {
-    return next(ErrorMessage(404, "Book Not Found 😥"));
+    return next(ErrorMessage(404, "الكتاب غير موجود"));
   }
 
   if (existingBook.file) {
@@ -101,7 +103,8 @@ export const deleteBook = catchError(async (request, response, next) => {
     where: { id },
   });
   response.status(201).json({
-    message: "Book deleted Successfully 😃",
+    message: "تم حذف الكتاب بنجاح",
+    statusCode: 201,
   });
 });
 export const getBooks = catchError(async (request, response, next) => {
@@ -113,12 +116,13 @@ export const getBooks = catchError(async (request, response, next) => {
     },
   });
   if (!existingBooks) {
-    return next(ErrorMessage(409, "Lesson Already Exist 🙄"));
+    return next(ErrorMessage(409, "الدرس موجود من قبل"));
   }
 
   response.status(201).json({
     message: "Success 😃",
     allBooks: existingBooks,
+    statusCode: 201,
   });
 });
 
@@ -134,9 +138,11 @@ export const getSingleBook = catchError(async (request, response, next) => {
     },
   });
   if (!existingBook) {
-    return next(ErrorMessage(404, "Book Not Found 😥"));
+    return next(ErrorMessage(404, "الكتاب غير موجود"));
   }
-  return response.status(200).json({ message: "success", book: existingBook });
+  return response
+    .status(200)
+    .json({ message: "success", book: existingBook, statusCode: 200 });
 });
 
 export const getAllBooksByClassId = catchError(
@@ -147,10 +153,11 @@ export const getAllBooksByClassId = catchError(
       include: { model: ClassSchema, as: "class" },
     });
     if (!allBooks) {
-      return next(ErrorMessage(404, `Book Not Found 😥`));
+      return next(ErrorMessage(404, `الكتاب غير موجود"));`));
     }
     response.status(200).json({
       allBooks,
+      statusCode: 200,
     });
   }
 );

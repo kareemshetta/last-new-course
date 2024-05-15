@@ -13,7 +13,7 @@ export const createExam = catchError(async (request, response, next) => {
   const { title, questionType, groupsId, examType } = request.body;
   const existingExam = await ExamSchema.findOne({ where: { title } });
   if (existingExam) {
-    return next(ErrorMessage(409, "Exam Already Exist 🙄"));
+    return next(ErrorMessage(409, "الامتحان موجود من قبل"));
   }
   if (questionType == "PDF" && request.file) {
     let { dest } = request.file;
@@ -31,8 +31,9 @@ export const createExam = catchError(async (request, response, next) => {
     await GroupExamSchema.bulkCreate([...bulkObject]);
   }
   response.status(201).json({
-    message: "Add New Exam Successfully 😃",
+    message: "تم اضافة امتحان جديد",
     result: newExam,
+    status: 201,
   });
 });
 
@@ -52,12 +53,13 @@ export const getExams = catchError(async (request, response, next) => {
   }
 
   if (!exams) {
-    return next(ErrorMessage(409, "Exam Already Exist 🙄"));
+    return next(ErrorMessage(409, "الامتحان موجود من قبل"));
   }
 
-  response.status(201).json({
+  response.status(200).json({
     message: "success😃",
     result: exams,
+    status: 200,
   });
 });
 export const getCompetitionExamsByClassId = catchError(
@@ -68,10 +70,11 @@ export const getCompetitionExamsByClassId = catchError(
     });
 
     if (!exams) {
-      return next(ErrorMessage(409, "Not Found Exam"));
+      return next(ErrorMessage(409, "لا يوجد مسابقات"));
     }
-    response.status(201).json({
+    response.status(200).json({
       result: exams,
+      status: 200,
     });
   }
 );
@@ -80,10 +83,11 @@ export const deleteExam = catchError(async (request, response, next) => {
   let { id } = request.params;
   let result = await ExamSchema.destroy({ where: { id } }); // return 0 , 1
   if (!result) {
-    return next(ErrorMessage(404, `Exam Not Found 😥`));
+    return next(ErrorMessage(404, `الامتحان غير موجود`));
   }
   response.status(200).json({
-    message: "Delete Successfully 🤝",
+    message: "تم حذف الامتحان بنجاح",
+    status: 200,
   });
 });
 
@@ -105,7 +109,7 @@ export const getAllExamByClassIdAndGroupId = catchError(
     const isGroupExist = await GroupSchema.findOne({ id: groupId });
     console.log(isGroupExist);
     if (!isGroupExist) {
-      return next(ErrorMessage(404, `Group Not Found 😥`));
+      return next(ErrorMessage(404, `المجموعة غير موجودة`));
     }
 
     // Assuming groupId is a route parameter
@@ -145,9 +149,10 @@ groups."name"
     if (groupExams && groupExams.length) {
       response.status(200).json({
         Exams: groupExams,
+        status: 200,
       });
     } else {
-      return next(ErrorMessage(404, `No Exams Found For This Group 😥`));
+      return next(ErrorMessage(404, `لا يوجد امتحانات للمجموعة`));
     }
   }
 );

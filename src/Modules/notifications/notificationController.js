@@ -24,6 +24,7 @@ export const getAllNotificationsForTeacher = catchError(
     response.status(200).json({
       message: "Get All Notifications Successfully 😃",
       notifications,
+      statusCode: 200,
     });
   }
 );
@@ -40,6 +41,7 @@ export const makeNotificationAsRead = catchError(
     }
     response.status(200).json({
       message: "Update Successfully 🤝",
+      statusCode: 200,
     });
   }
 );

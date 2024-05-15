@@ -46,6 +46,7 @@ export const register = catchError(async (request, response, next) => {
   response.status(201).json({
     message: "تم تسجيل المعلم بنجاح",
     result: newTeacher,
+    statusCode: 201,
   });
 });
 
@@ -64,6 +65,7 @@ export const changePassword = catchError(async (request, response, next) => {
   await existingTeacher.save();
   response.status(200).json({
     message: "تم تغيير كلمة المرور بنجاح",
+    statusCode: 200,
   });
 });
 
@@ -83,6 +85,7 @@ export const updateTeacherData = catchError(async (request, response, next) => {
 
   response.status(200).json({
     message: "تم تحديث بيانات المعلم بنجاح",
+    statusCode: 200,
   });
 });
 
@@ -111,6 +114,7 @@ export const verifiedStudent = catchError(async (request, response, next) => {
   response.status(200).json({
     message: `${verified ? "تم تفعيل حسابك بنجاح" : "تم الغاء تفعيل حسابك"}`,
     newStudent,
+    statusCode: 200,
   });
 });
 export const changeStudentGroup = catchError(
@@ -158,6 +162,7 @@ export const changeStudentGroup = catchError(
     response.status(200).json({
       message: "تم تغيير المجموعة بنجاح",
       student: result,
+      statusCode: 200,
     });
   }
 );
@@ -193,6 +198,7 @@ export const updateStudentResult = catchError(
     response.status(200).json({
       message: "Result Changed Successfully",
       result,
+      statusCode: 200,
     });
   }
 );
@@ -237,7 +243,7 @@ export const getAllResultFroPendingHomeWork = catchError(
     if (results.length === 0) {
       return next(ErrorMessage(404, "not found "));
     }
-    response.status(200).json({ results });
+    response.status(200).json({ results, statusCode: 200 });
   }
 );
 
@@ -266,7 +272,7 @@ export const getExamResults = catchError(async (request, response, next) => {
   if (!results) {
     return next(ErrorMessage(404, "لا يوجد نتائج"));
   }
-  return response.status(200).json({ results });
+  return response.status(200).json({ results, statusCode: 200 });
 });
 
 export const getStudentById = catchError(async (request, response, next) => {
@@ -306,5 +312,6 @@ export const getStudentById = catchError(async (request, response, next) => {
 
   response.status(200).json({
     studentData,
+    statusCode: 200,
   });
 });
