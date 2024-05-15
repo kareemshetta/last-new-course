@@ -121,6 +121,7 @@ group_exams."updatedAt",
 exams."file",exams."description",exams."questions",exams."score",exams."language",exams."startTime",
 exams."questionType",
 exams."duration",
+exams."status",
 groups."name"
 	FROM public.group_exams  join groups on group_exams."groupId"=groups."id"
 	join exams on exams."id"=group_exams."examId"
