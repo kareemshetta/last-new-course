@@ -240,9 +240,9 @@ export const getAllResultFroPendingHomeWork = catchError(
       }
     }
 
-    if (results.length === 0) {
-      return next(ErrorMessage(404, "not found "));
-    }
+    // if (results.length === 0) {
+    //   return next(ErrorMessage(404, "not found "));
+    // }
     response.status(200).json({ results, statusCode: 200 });
   }
 );

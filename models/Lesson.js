@@ -28,5 +28,6 @@ export const createLesson = (sequelize) => {
     },
     score: { type: DataTypes.DECIMAL },
     questionType: { type: DataTypes.ENUM(["PDF", "MCQ"]) },
+    endShowingDate: { type: DataTypes.DATE },
   });
 };
