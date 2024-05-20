@@ -11,6 +11,8 @@ export const createLesson = Joi.object({
   homeworkQuestions: Joi.array().items(Joi.string()),
   score: Joi.number(),
   questionType: Joi.string().valid("PDF", "MCQ").required(),
+  language: Joi.string().valid("English", "Arabic"),
+  endShowingDate: Joi.date(),
 });
 
 export const updateLesson = Joi.object({

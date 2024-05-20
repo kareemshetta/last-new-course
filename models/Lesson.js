@@ -26,6 +26,7 @@ export const createLesson = (sequelize) => {
     homeworkQuestions: {
       type: DataTypes.JSON, // Using JSON to store an array of objects
     },
+    language: { type: DataTypes.ENUM(["English", "Arabic"]) },
     score: { type: DataTypes.DECIMAL },
     questionType: { type: DataTypes.ENUM(["PDF", "MCQ"]) },
     endShowingDate: { type: DataTypes.DATE },
